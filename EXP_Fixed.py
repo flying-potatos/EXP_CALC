@@ -100,6 +100,6 @@ def Calculate(Exp):
     for i in Tmp_NUM:
         if i == 'U': continue
         RESULT = i
-    return RESULT 
+    return RESULT
 EXP = input("수식을 입력해주세요 : ")
 print("RESULT : %.2lf"%Replace_Bracket(EXP))   
