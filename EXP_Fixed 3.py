@@ -1,3 +1,4 @@
+#EXP.py
 def Compare_Type(Exp): ### 숫자를 받아 실수인지 정수인지 판별 그리고 타입에 맞게 변환후 리턴
     first,middle,last = str(Exp).partition('.')
     if middle == '.': return float(Exp)
