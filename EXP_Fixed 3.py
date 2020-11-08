@@ -1,4 +1,3 @@
-#Exp.py
 def Compare_Type(Exp): ### 숫자를 받아 실수인지 정수인지 판별 그리고 타입에 맞게 변환후 리턴
     first,middle,last = str(Exp).partition('.')
     if middle == '.': return float(Exp)
@@ -12,7 +11,7 @@ def Replace_EXP(Exp):
     NUM = list();RES = list();DEL_BALNK = list();TMP='';m_cnt=0 ###십의 자리 이상 숫자들을 정리
     for i in Exp:
         if i == 'U': continue
-        if i == '-' or i == '+' or i == '*' or i == '/': 
+        if i == '-' or i == '+' or i == '*' or i == '/' or i == '^': 
             NUM.append(TMP);NUM.append(i);TMP=''
             continue
         TMP+=str(i)
@@ -23,7 +22,7 @@ def Replace_EXP(Exp):
     for i in range(0,len(DEL_BALNK)): ### 음수들을 정리
         if DEL_BALNK[i] == '' or m_cnt > 0: m_cnt=0;continue 
         if DEL_BALNK[i] == '-':
-            if i == 0 or DEL_BALNK[i-1] == '+' or DEL_BALNK[i-1] == '*' or DEL_BALNK[i-1] == '/' or DEL_BALNK[i-1] == '(':
+            if i == 0 or DEL_BALNK[i-1] == '+' or DEL_BALNK[i-1] == '*' or DEL_BALNK[i-1] == '/' or DEL_BALNK[i-1] == '(' or DEL_BALNK[i-1] == '^':
                 NRE = DEL_BALNK[i]+DEL_BALNK[i+1];
                 RES.append(NRE);m_cnt+=1
                 continue
@@ -53,23 +52,25 @@ def Find_Right_Bracket(Exp):
     return last
 def Find_NUM_Left(Exp,Loc): 
     for i in range(Loc,-1,-1):
-        if Exp[i] != 'U' and Exp[i] != '+' and Exp[i] != '-' and Exp[i] != '/' and Exp[i] != '*':
+        if Exp[i] != 'U' and Exp[i] != '+' and Exp[i] != '-' and Exp[i] != '/' and Exp[i] != '*' and Exp[i] != '^':
             return i
 def Find_NUM_Right(Exp,Loc,LEN):
     for i in range(Loc,LEN+1):
-        if Exp[i] != 'U' and Exp[i] != '+' and Exp[i] != '-' and Exp[i] != '/' and Exp[i] != '*':
+        if Exp[i] != 'U' and Exp[i] != '+' and Exp[i] != '-' and Exp[i] != '/' and Exp[i] != '*' and Exp[i] != '^':
             return i
 def Find_FP_OP(Exp):
     cnt = 0
     for i in range(0,len(Exp)):
         if Exp[i] == '*': cnt+=1
         if Exp[i] == '/': cnt+=1
+        
     return cnt
 def Find_SP_OP(Exp):
     cnt = 0
     for i in range(0,len(Exp)):
         if Exp[i] == '+': cnt+=1
         if Exp[i] == '-': cnt+=1
+        if Exp[i] == '^': cnt+=1
     return cnt
 def Calculate(Exp):
     Tmp_NUM = list();NUM = Replace_EXP(Exp)[::] ### 숫자들을 정리(1,100,1000)
@@ -85,6 +86,7 @@ def Calculate(Exp):
             for j in range(Find_NUM_Left(NUM,i),Find_NUM_Right(NUM,i,len(NUM))+1):
                 NUM[j] = 'U'
             NUM.insert(i-1,Tmp_Res)
+        
     for i in NUM:               ### 리스트의 길이를 위해 대신 채운 u 값을 거를 차례
         if i == 'U': continue
         Tmp_NUM.append(i)
@@ -100,6 +102,12 @@ def Calculate(Exp):
             for j in range(Find_NUM_Left(Tmp_NUM,i),Find_NUM_Right(Tmp_NUM,i,len(Tmp_NUM))+1):
                 Tmp_NUM[j] = 'U'
             Tmp_NUM.insert(i-1,Tmp_Res)
+        elif Tmp_NUM[i] == '^':
+            Tmp_Res = Compare_Type(Tmp_NUM[Find_NUM_Left(Tmp_NUM,i)])**Compare_Type(Tmp_NUM[Find_NUM_Right(Tmp_NUM,i,len(Tmp_NUM))])
+            for j in range(Find_NUM_Left(Tmp_NUM,i),Find_NUM_Right(Tmp_NUM,i,len(Tmp_NUM))+1):
+                Tmp_NUM[j] = 'U'
+            Tmp_NUM.insert(i-1,Tmp_Res)
+        
     for i in Tmp_NUM:
         if i == 'U': continue
         RESULT = i
@@ -110,4 +118,4 @@ try:
 except MemoryError as MSG:
     print("Error : %s"%MSG)
 else:
-    print("RESULT :",Data)   
+    print("RESULT :",Data) 
