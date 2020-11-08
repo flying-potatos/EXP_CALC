@@ -64,8 +64,7 @@ def Find_FP_OP(Exp):
     for i in range(0,len(Exp)):
         if Exp[i] == '^': cnt+=1
         if Exp[i] == '*': cnt+=1
-        if Exp[i] == '/': cnt+=1
-        
+        if Exp[i] == '/': cnt+=1  
     return cnt
 def Find_SP_OP(Exp):
     cnt = 0
