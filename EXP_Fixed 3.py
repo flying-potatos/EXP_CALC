@@ -62,6 +62,7 @@ def Find_NUM_Right(Exp,Loc,LEN):
 def Find_FP_OP(Exp):
     cnt = 0
     for i in range(0,len(Exp)):
+        if Exp[i] == '^': cnt+=1
         if Exp[i] == '*': cnt+=1
         if Exp[i] == '/': cnt+=1
         
@@ -70,8 +71,7 @@ def Find_SP_OP(Exp):
     cnt = 0
     for i in range(0,len(Exp)):
         if Exp[i] == '+': cnt+=1
-        if Exp[i] == '-': cnt+=1
-        if Exp[i] == '^': cnt+=1
+        if Exp[i] == '-': cnt+=1    
     return cnt
 def Calculate(Exp):
     Tmp_NUM = list();NUM = Replace_EXP(Exp)[::] ### 숫자들을 정리(1,100,1000)
@@ -79,6 +79,11 @@ def Calculate(Exp):
     for i in range(0,len(NUM)+FPv):         ### 곱하기와 나누기 연산 진행                      
         if NUM[i] == '*':
             Tmp_Res = Compare_Type(NUM[Find_NUM_Left(NUM,i)])*Compare_Type(NUM[Find_NUM_Right(NUM,i,len(NUM))])
+            for j in range(Find_NUM_Left(NUM,i),Find_NUM_Right(NUM,i,len(NUM))+1):
+                NUM[j] = 'U'
+            NUM.insert(i-1,Tmp_Res)
+        elif NUM[i] == '^':
+            Tmp_Res = Compare_Type(NUM[Find_NUM_Left(NUM,i)])**Compare_Type(NUM[Find_NUM_Right(NUM,i,len(NUM))])
             for j in range(Find_NUM_Left(NUM,i),Find_NUM_Right(NUM,i,len(NUM))+1):
                 NUM[j] = 'U'
             NUM.insert(i-1,Tmp_Res)
@@ -102,13 +107,7 @@ def Calculate(Exp):
             Tmp_Res = Compare_Type(Tmp_NUM[Find_NUM_Left(Tmp_NUM,i)])-Compare_Type(Tmp_NUM[Find_NUM_Right(Tmp_NUM,i,len(Tmp_NUM))])
             for j in range(Find_NUM_Left(Tmp_NUM,i),Find_NUM_Right(Tmp_NUM,i,len(Tmp_NUM))+1):
                 Tmp_NUM[j] = 'U'
-            Tmp_NUM.insert(i-1,Tmp_Res)
-        elif Tmp_NUM[i] == '^':
-            Tmp_Res = Compare_Type(Tmp_NUM[Find_NUM_Left(Tmp_NUM,i)])**Compare_Type(Tmp_NUM[Find_NUM_Right(Tmp_NUM,i,len(Tmp_NUM))])
-            for j in range(Find_NUM_Left(Tmp_NUM,i),Find_NUM_Right(Tmp_NUM,i,len(Tmp_NUM))+1):
-                Tmp_NUM[j] = 'U'
-            Tmp_NUM.insert(i-1,Tmp_Res)
-        
+            Tmp_NUM.insert(i-1,Tmp_Res)       
     for i in Tmp_NUM:
         if i == 'U': continue
         RESULT = i
